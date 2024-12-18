@@ -13,7 +13,7 @@ class WorkerController extends Controller
      */
     public function index()
     {
-        return Worker::all();
+        return Worker::with('department')->get();
     }
 
     /**
@@ -22,9 +22,11 @@ class WorkerController extends Controller
     public function store(Request $request)
     {
         $validator= Validator::make($request->all(),[
+            'department_id' => 'required|exists:departments,id',
             'name' => 'required',
             'city' => 'required',
             'email' => 'required|email|unique:workers',
+
         ]);
         if($validator->fails()){
             return response()->json($validator->errors(), 422);
@@ -53,6 +55,7 @@ class WorkerController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'email' => 'email|unique:workers',
+            'department_id' =>'exists:departments_id'
         ]);
 
         if($validator->fails()){
